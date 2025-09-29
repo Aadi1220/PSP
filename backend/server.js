@@ -7,7 +7,7 @@ const mongoose = require('mongoose'); //
 const cloudinary = require('cloudinary').v2; // 
 const contactRoutes = require('./routes/contactRoutes'); // 
 const paymentRoutes = require('./routes/paymentRoutes');
-const path = require('path'); 
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,18 +39,9 @@ app.use('/api', contactRoutes);
 app.use("/api/payment", paymentRoutes);
 
 // Basic route
-
-const frontendDist = path.join(__dirname, '../frontend/dist'); // <-- point to built frontend
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(frontendDist));
-}
-
-
-app.get('*', (req, res) => {
--    res.sendFile(path.join(frontendDist, 'index.html'));
-+    // Serve frontend index.html for any non-API route
-+    res.sendFile(path.join(frontendDist, 'index.html'));
-  });
+app.use('/', (req, res) => {
+  res.redirect("/api")
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
